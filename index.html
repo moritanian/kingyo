@@ -1,9 +1,9 @@
 <!doctype html>
 <html>
 <head>
- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
- <title>multi party</title>
- <script src="https://cdn.WebRTC-Experiment.com/getScreenId.js"></script>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>kingyo live</title>
+  <link href="index.css" rel="stylesheet" />
 <script src="https://rtc-world-s.herokuapp.com/socket.io/socket.io.js"></script> 
 
  <script>
@@ -19,28 +19,21 @@
   </script>
 </head>
 <body>
-  socket.io signaling for multi-party (trickle ICE)<br />
-  &nbsp;
-  <button type="button" onclick="connect();">Connect</button>
-  <button type="button" onclick="hangUp();">Hang Up</button> 
-  &nbsp;
-  
+ 
   <div>
-    <video id="local_video" autoplay style="width: 860px; height: 620px; border: 1px solid black;"></video>
   </div>
   <div id="container">
   </div>
-  <!--
-  <p>SDP to send:<br />
-    <textarea id="text_for_send_sdp" rows="5" cols="60" readonly="readonly">SDP to send</textarea>
-  </p>
-  <p>SDP received:&nbsp;
-    <button type="button" onclick="onSdpText();">Receive remote SDP</button>
-    <br />
-    <textarea id="text_for_receive_sdp" rows="5" cols="60"></textarea>
-  </p>
-  -->
 
+  <div class="poi">
+    <div class="poi-circle">
+      <div class="poi-inner-circle">
+      </div>
+    </div>
+    <div class="poi-handle">
+    </div>
+  </div>
+ 
 </body>
 <script type="text/javascript">
   let localVideo = document.getElementById('local_video');
@@ -182,7 +175,7 @@
         return room;
       }
     }
-    return '_testroom';
+    return 'kingyo_room';
   }
   // ---- for multi party -----
   function isReadyToConnect() {
@@ -273,11 +266,12 @@
   }
   function createVideoElement(elementId) {
     let video = document.createElement('video');
-    video.width = '240';
-    video.height = '180';
+    video.width = '800';
+    //video.height = '600';
     video.id = elementId;
-    video.style.border = 'solid black 1px';
-    video.style.margin = '2px';
+    video.classList.add("remote-video");
+    //video.style.border = 'solid black 1px';
+    //video.style.margin = '2px';
     container.appendChild(video);
     return video;
   }
@@ -288,62 +282,8 @@
     return video;
   }
   // ---------------------- media handling ----------------------- 
-  // start local video
-  function startVideo() {
-    let option = {
-      audio: false,
-      video: {
-        mandatory: {
-          chromeMediaSource: 'screen',
-          maxWidth: 1280,
-          maxHeight: 720
-        },
-        optional: []
-      }
-    };
+  
 
-    navigator.webkitGetUserMedia({
-       audio: false,
-       video: {
-         mandatory: {
-             chromeMediaSource: 'screen',
-             maxWidth: 1280,
-             maxHeight: 720
-         },
-         optional: []
-       }
-      }, function(stream) {
-         pc.addStream(stream);
-       }, function(err) {
-        console.log(err);
-         //Error, no stream provided
-       }
-      );
-/*
-    navigator.getUserMedia(option,
-      function (stream) { // success
-      console.log(stream);
-      localStream = stream;
-      playVideo(localVideo, stream);
-    },
-    function (error) { // error
-      console.error('getUserMedia error:', error);
-      return;
-    });
-*/
-    /*
-    getDeviceStream({video: true, audio: true}) // audio: false <-- ontrack once, audio:true --> ontrack twice!!
-    .then(function (stream) { // success
-      console.log(stream);
-      localStream = stream;
-      playVideo(localVideo, stream);
-    }).catch(function (error) { // error
-      console.error('getUserMedia error:', error);
-      return;
-    });
-  */
-
-  }
   // stop local video
   function stopVideo() {
     pauseVideo(localVideo);
@@ -378,6 +318,7 @@
     }
   }
   function playVideo(element, stream) {
+    console.log(stream);
     if ('srcObject' in element) {
       element.srcObject = stream;
     }
@@ -626,20 +567,7 @@
   
   // start PeerConnection
   function connect() {
-    /*
-    debugger; // SHOULD NOT COME HERE
-    if (! peerConnection) {
-      console.log('make Offer');
-      makeOffer();
-    }
-    else {
-      console.warn('peer already exist.');
-    }
-    */
-    if (false && ! isReadyToConnect()) {
-      console.warn('NOT READY to connect');
-    }
-    else if (! canConnectMore()) {
+   if (! canConnectMore()) {
       console.log('TOO MANY connections');
     }
     else {
@@ -718,16 +646,7 @@
     sendAlongDataChanel("moritanian");
   }
 
-
-getScreenId(function (error, sourceId, screen_constraints) {
-    navigator.getUserMedia = navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
-    navigator.getUserMedia(screen_constraints, function (stream) {
-        document.querySelector('video').src = URL.createObjectURL(stream);
-        localStream = stream;
-    }, function (error) {
-        console.error(error);
-    });
-});
+  connect();
 
 </script>
 </html>
